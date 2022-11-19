@@ -4,10 +4,11 @@ import 'package:crypto/crypto.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:flutter/material.dart' hide Key;
 
-class Encryptor with ChangeNotifier {
-  Encrypter? encrypter;
+class Encryptor {
+  Encrypter? _encrypter;
   String? _profileKey;
-  AESMode _profileAlgorithm = AESMode.cbc;
+
+  String get profileKey => _profileKey!;
 
   void _createEncrypter(String password, AESMode mode) {
     String passwordParser = password;
@@ -17,28 +18,27 @@ class Encryptor with ChangeNotifier {
     passwordParser = passwordParser.characters.take(32).toString();
     final key = Key.fromUtf8(passwordParser);
 
-    encrypter = Encrypter(AES(key, mode: mode));
-    _profileAlgorithm = mode;
+    _encrypter = Encrypter(AES(key, mode: mode));
   }
 
   String encrypt(String text) {
-    if (encrypter == null) {
+    if (_encrypter == null) {
       throw Exception('Encrypter is null');
     }
-    return encrypter!.encrypt(text, iv: IV.fromLength(16)).base64;
+    return _encrypter!.encrypt(text, iv: IV.fromLength(16)).base64;
   }
 
   String decrypt(String text) {
-    if (encrypter == null) {
+    if (_encrypter == null) {
       throw Exception('Encrypter is null');
     }
-    return encrypter!.decrypt64(text, iv: IV.fromLength(16));
+    return _encrypter!.decrypt64(text, iv: IV.fromLength(16));
   }
 
   void createProfile(String key1, String key2, AESMode mode) {
     _createEncrypter(key1, mode);
+    _profileKey = md5.convert(utf8.encode(key1)).toString();
     final encryptedKey = md5.convert(utf8.encode(encrypt(key2)));
-    _profileKey = encryptedKey.toString();
-    _createEncrypter('$_profileKey', _profileAlgorithm);
+    _createEncrypter('$encryptedKey', mode);
   }
 }

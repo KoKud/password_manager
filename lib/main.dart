@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:password_manager/providers/encryptor.dart';
+import 'package:password_manager/providers/passwords.dart';
 import 'package:password_manager/screens/app_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +17,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => Encryptor()),
+        Provider<Encryptor>(create: (_) => Encryptor()),
+        ChangeNotifierProxyProvider<Encryptor, Passwords>(
+          create: (_) => Passwords(Encryptor()),
+          update: (_, encryptor, __) => Passwords(encryptor)..loadPasswords(),
+        ),
       ],
       child: MaterialApp(
         title: 'Password Manager',
