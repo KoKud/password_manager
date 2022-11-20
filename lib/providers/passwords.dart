@@ -40,4 +40,20 @@ class Passwords with ChangeNotifier {
     _passwords.addAll({password.website: password});
     notifyListeners();
   }
+
+  Future<void> deletePassword(Password password) async {
+    final jsonArray = await _storage.read(key: _encryptor.profileKey);
+
+    Map<String, String> storagePasswords =
+        Map<String, String>.from(jsonDecode(jsonArray ?? '{}'));
+
+    storagePasswords.remove(password.website);
+    await _storage.write(
+      key: _encryptor.profileKey,
+      value: jsonEncode(storagePasswords),
+    );
+
+    _passwords.remove(password.website);
+    notifyListeners();
+  }
 }

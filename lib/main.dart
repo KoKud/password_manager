@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:password_manager/providers/encryptor.dart';
 import 'package:password_manager/providers/passwords.dart';
 import 'package:password_manager/screens/app_screen.dart';
+import 'package:password_manager/screens/settings_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'screens/auth_screen.dart';
@@ -26,11 +27,23 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Password Manager',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          useMaterial3: true,
+          brightness: Brightness.light,
+          fontFamily: 'Poppins',
+          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.indigo)
+              .copyWith(secondary: Colors.orange),
+        ),
+        darkTheme: ThemeData(
+          useMaterial3: true,
+          fontFamily: 'Poppins',
+          colorScheme: ColorScheme.fromSwatch(
+                  brightness: Brightness.dark, primarySwatch: Colors.indigo)
+              .copyWith(secondary: Colors.orange),
         ),
         routes: {
           AuthScreen.routeName: (_) => const AuthScreen(),
           AppScreen.routeName: (_) => const AppScreen(),
+          SettingsScreen.routeName: (_) => const SettingsScreen(),
         },
       ),
     );

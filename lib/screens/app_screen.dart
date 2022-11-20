@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:password_manager/models/password.dart';
 import 'package:password_manager/providers/passwords.dart';
+import 'package:password_manager/screens/settings_screen.dart';
+import 'package:password_manager/widgets/pass_tile.dart';
 import 'package:provider/provider.dart';
+
+import '../widgets/create_new_password.dart';
 
 class AppScreen extends StatelessWidget {
   const AppScreen({super.key});
@@ -15,7 +19,9 @@ class AppScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
-            onPressed: () {}, //TODO: Add settings screen
+            onPressed: () {
+              Navigator.of(context).pushNamed(SettingsScreen.routeName);
+            },
           ),
         ],
       ),
@@ -24,22 +30,16 @@ class AppScreen extends StatelessWidget {
           itemCount: passwords.passwords.length,
           itemBuilder: (context, index) {
             Password password = passwords.passwords.values.elementAt(index);
-            return ListTile(
-              title: Text(password.website),
-              subtitle: Text(password.username),
-              trailing: Text('*' * password.password.length),
-            );
+            return PassTile(password: password);
           },
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        //TODO: Implement this
         onPressed: () {
-          Provider.of<Passwords>(context, listen: false).createPassword(
-              Password(
-                  website: 'website2',
-                  username: 'username',
-                  password: 'password'));
+          showDialog(
+            context: context,
+            builder: (context) => CreateNewPassword(),
+          );
         },
         child: const Icon(Icons.add),
       ),

@@ -46,7 +46,7 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('PasswordManager'),
+        title: const Text('Password Manager'),
       ),
       body: Form(
         key: _formKey,
@@ -54,24 +54,41 @@ class _AuthScreenState extends State<AuthScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text('Welcome to PasswordManager'),
+            const Text('Welcome to Password Manager',
+                style: TextStyle(fontSize: 20)),
             const Text('Please authenticate yourself'),
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Key 1',
+            const SizedBox(height: 20),
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 500),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Key 1',
+                    border: OutlineInputBorder(),
+                  ),
+                  obscureText: true,
+                  validator: _keyValidator,
+                  onSaved: (value) => _keysData['key1'] = value!,
+                ),
               ),
-              obscureText: true,
-              validator: _keyValidator,
-              onSaved: (value) => _keysData['key1'] = value!,
             ),
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Key 2',
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 500),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Key 2',
+                    border: OutlineInputBorder(),
+                  ),
+                  obscureText: true,
+                  validator: _keyValidator,
+                  onSaved: (value) => _keysData['key2'] = value!,
+                ),
               ),
-              obscureText: true,
-              validator: _keyValidator,
-              onSaved: (value) => _keysData['key2'] = value!,
             ),
+            const SizedBox(height: 40),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -89,7 +106,13 @@ class _AuthScreenState extends State<AuthScreen> {
                 ),
               ],
             ),
+            const SizedBox(height: 30),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Theme.of(context).primaryColorLight,
+                backgroundColor: Theme.of(context).primaryColor,
+                minimumSize: const Size(200, 55),
+              ),
               onPressed: () => _logintoProfile(context),
               child: const Text('Authenticate'),
             ),

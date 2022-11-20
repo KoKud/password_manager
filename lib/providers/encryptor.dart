@@ -37,7 +37,9 @@ class Encryptor {
 
   void createProfile(String key1, String key2, AESMode mode) {
     _createEncrypter(key1, mode);
-    _profileKey = md5.convert(utf8.encode(key1)).toString();
+    final profileKeyMd5 = '${md5.convert(utf8.encode(key1 + mode.toString()))}';
+    final hmacSha512 = Hmac(sha512, utf8.encode(key2));
+    _profileKey = hmacSha512.convert(utf8.encode(profileKeyMd5)).toString();
     final encryptedKey = md5.convert(utf8.encode(encrypt(key2)));
     _createEncrypter('$encryptedKey', mode);
   }
