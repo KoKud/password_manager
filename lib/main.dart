@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider<Encryptor>(create: (_) => Encryptor()),
+        ChangeNotifierProvider<Encryptor>(create: (_) => Encryptor()),
         ChangeNotifierProxyProvider<Encryptor, Passwords>(
           create: (_) => Passwords(Encryptor()),
           update: (_, encryptor, __) => Passwords(encryptor)..loadPasswords(),

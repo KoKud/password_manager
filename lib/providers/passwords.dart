@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:encrypt/encrypt.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
@@ -55,5 +56,32 @@ class Passwords with ChangeNotifier {
     encryptedBox.delete(password.website);
     _passwords.remove(password.website);
     notifyListeners();
+  }
+
+  void logout() {
+    encryptedBox.close();
+    _passwords.clear();
+    notifyListeners();
+  }
+
+  void importPasswords(String json, String key1, String key2, AESMode mode) {
+    Map<String, dynamic> passwords = jsonDecode(json);
+    final encriptionProfile = Encryptor()..createProfile(key1, key2, mode);
+    passwords.forEach((key, value) {
+      final password = Password.fromJson(
+        key,
+        value,
+        encriptionProfile,
+      );
+      encryptedBox.put(password.website, password.toJson(_encryptor).value);
+      _passwords.putIfAbsent(key, () => password);
+    });
+    notifyListeners();
+  }
+
+  String exportPasswords() {
+    final passwords = encryptedBox.toMap();
+    final json = jsonEncode(passwords);
+    return json;
   }
 }

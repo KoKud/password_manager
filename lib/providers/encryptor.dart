@@ -4,7 +4,7 @@ import 'package:crypto/crypto.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:flutter/material.dart' hide Key;
 
-class Encryptor {
+class Encryptor with ChangeNotifier {
   Encrypter? _encrypter;
   String? _profileKey;
 
@@ -42,5 +42,11 @@ class Encryptor {
     _profileKey = hmacSha512.convert(utf8.encode(profileKeyMd5)).toString();
     final encryptedKey = md5.convert(utf8.encode(encrypt(key2)));
     _createEncrypter('$encryptedKey', mode);
+    notifyListeners();
+  }
+
+  void logout() {
+    _encrypter = null;
+    _profileKey = null;
   }
 }

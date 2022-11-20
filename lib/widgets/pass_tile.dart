@@ -17,6 +17,8 @@ class PassTile extends StatefulWidget {
 
 class _PassTileState extends State<PassTile> {
   bool _showPassword = false;
+  bool _hover = false;
+
   void showPasswordDetails(BuildContext context) {
     showDialog(
       context: context,
@@ -103,30 +105,46 @@ class _PassTileState extends State<PassTile> {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: CircleAvatar(
-        child: Text(widget.password.website[0]),
-      ),
-      onTap: () => showPasswordDetails(context),
-      onLongPress: () {
-        Clipboard.setData(ClipboardData(text: widget.password.password));
-      },
-      title: Text(
-        widget.password.website,
-        overflow: TextOverflow.ellipsis,
-      ),
-      subtitle: Text(
-        '${widget.password.username} :   ${_showPassword ? widget.password.password : ('* ' * widget.password.password.length)}',
-        overflow: TextOverflow.ellipsis,
-        maxLines: 1,
-      ),
-      trailing: IconButton(
-        onPressed: () {
-          setState(() {
-            _showPassword = !_showPassword;
-          });
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => _hover = true),
+      onExit: (_) => setState(() => _hover = false),
+      child: GestureDetector(
+        child: Card(
+          color: _hover
+              ? Theme.of(context).colorScheme.surfaceTint
+              : Theme.of(context).cardColor,
+          child: Center(
+            child: ListTile(
+              mouseCursor: SystemMouseCursors.click,
+              leading: CircleAvatar(
+                child: Text(widget.password.website[0]),
+              ),
+              title: Text(
+                widget.password.website,
+                overflow: TextOverflow.ellipsis,
+              ),
+              subtitle: Text(
+                '${widget.password.username} :   ${_showPassword ? widget.password.password : ('* ' * widget.password.password.length)}',
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+              trailing: IconButton(
+                onPressed: () {
+                  setState(() {
+                    _showPassword = !_showPassword;
+                  });
+                },
+                icon: Icon(
+                    _showPassword ? Icons.visibility_off : Icons.visibility),
+              ),
+            ),
+          ),
+        ),
+        onTap: () => showPasswordDetails(context),
+        onLongPress: () {
+          Clipboard.setData(ClipboardData(text: widget.password.password));
         },
-        icon: Icon(_showPassword ? Icons.visibility_off : Icons.visibility),
       ),
     );
   }

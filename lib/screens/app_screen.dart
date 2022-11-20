@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:password_manager/models/password.dart';
-import 'package:password_manager/providers/passwords.dart';
-import 'package:password_manager/screens/settings_screen.dart';
-import 'package:password_manager/widgets/pass_tile.dart';
-import 'package:provider/provider.dart';
 
-import '../widgets/create_new_password.dart';
+import '../responsive/app_screen/app_desktop.dart';
+import '../responsive/app_screen/app_mobile.dart';
+import '../responsive/app_screen/app_tablet.dart';
 
 class AppScreen extends StatelessWidget {
   const AppScreen({super.key});
@@ -13,36 +10,14 @@ class AppScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('PasswordManager'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              Navigator.of(context).pushNamed(SettingsScreen.routeName);
-            },
-          ),
-        ],
-      ),
-      body: Consumer<Passwords>(
-        builder: (context, passwords, child) => ListView.builder(
-          itemCount: passwords.passwords.length,
-          itemBuilder: (context, index) {
-            Password password = passwords.passwords.values.elementAt(index);
-            return PassTile(password: password);
-          },
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) => CreateNewPassword(),
-          );
-        },
-        child: const Icon(Icons.add),
-      ),
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      if (constraints.maxWidth < 600) {
+        return const AppMobile();
+      } else if (constraints.maxWidth < 1000) {
+        return const AppTablet();
+      } else {
+        return const AppDesktop();
+      }
+    });
   }
 }
