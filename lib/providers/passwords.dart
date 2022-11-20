@@ -2,57 +2,57 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hive/hive.dart';
 import 'package:password_manager/models/password.dart';
 import 'package:password_manager/providers/encryptor.dart';
 
 class Passwords with ChangeNotifier {
   final Map<String, Password> _passwords = {};
-  final _storage = const FlutterSecureStorage();
   final Encryptor _encryptor;
   Passwords(this._encryptor);
 
   Map<String, Password> get passwords => {..._passwords};
+  late Box<dynamic> encryptedBox;
+
+  Future<void> openHiveEncryptedBox() async {
+    const secureStorage = FlutterSecureStorage();
+
+    final storageKey = await secureStorage.read(key: 'key');
+    if (storageKey == null) {
+      final key = Hive.generateSecureKey();
+      await secureStorage.write(
+        key: 'key',
+        value: base64UrlEncode(key),
+      );
+    }
+    final key = await secureStorage.read(key: 'key');
+    final encryptionKey = base64Url.decode(key!);
+    encryptedBox = await Hive.openBox(_encryptor.profileKey,
+        encryptionCipher: HiveAesCipher(encryptionKey));
+  }
 
   void loadPasswords() async {
-    final profileData = await _storage.read(key: _encryptor.profileKey);
+    await openHiveEncryptedBox();
 
-    Map<String, String> passwordsData =
-        Map<String, String>.from(jsonDecode(profileData ?? '{}'));
-    for (var website in passwordsData.keys) {
-      _passwords[website] =
-          Password.fromJson(website, passwordsData[website]!, _encryptor);
+    for (var key in encryptedBox.keys) {
+      final password = Password.fromJson(
+        key,
+        encryptedBox.get(key),
+        _encryptor,
+      );
+      _passwords.putIfAbsent(key, () => password);
     }
     notifyListeners();
   }
 
-  void createPassword(Password password) async {
-    final jsonArray = await _storage.read(key: _encryptor.profileKey);
-
-    Map<String, String> storagePasswords =
-        Map<String, String>.from(jsonDecode(jsonArray ?? '{}'));
-    storagePasswords.addEntries([password.toJson(_encryptor)]);
-
-    _storage.write(
-      key: _encryptor.profileKey,
-      value: jsonEncode(storagePasswords),
-    );
-
+  void createPassword(Password password) {
+    encryptedBox.put(password.website, password.toJson(_encryptor).value);
     _passwords.addAll({password.website: password});
     notifyListeners();
   }
 
-  Future<void> deletePassword(Password password) async {
-    final jsonArray = await _storage.read(key: _encryptor.profileKey);
-
-    Map<String, String> storagePasswords =
-        Map<String, String>.from(jsonDecode(jsonArray ?? '{}'));
-
-    storagePasswords.remove(password.website);
-    await _storage.write(
-      key: _encryptor.profileKey,
-      value: jsonEncode(storagePasswords),
-    );
-
+  void deletePassword(Password password) {
+    encryptedBox.delete(password.website);
     _passwords.remove(password.website);
     notifyListeners();
   }

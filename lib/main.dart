@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:password_manager/providers/encryptor.dart';
 import 'package:password_manager/providers/passwords.dart';
 import 'package:password_manager/screens/app_screen.dart';
@@ -7,7 +8,8 @@ import 'package:provider/provider.dart';
 
 import 'screens/auth_screen.dart';
 
-void main() {
+void main() async {
+  await Hive.initFlutter();
   runApp(const MyApp());
 }
 

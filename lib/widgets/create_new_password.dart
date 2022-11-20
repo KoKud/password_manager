@@ -24,7 +24,7 @@ class CreateNewPassword extends StatelessWidget {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  void _saveForm(BuildContext context) async {
+  void _saveForm(BuildContext context) {
     final prefWebsite = passwordDetails['website'];
     final isValid = _formKey.currentState!.validate();
     if (!isValid) {
@@ -32,13 +32,12 @@ class CreateNewPassword extends StatelessWidget {
     }
     Navigator.of(context).pop(passwordDetails);
     if (prefWebsite?.isNotEmpty ?? false) {
-      await Provider.of<Passwords>(context, listen: false).deletePassword(
+      Provider.of<Passwords>(context, listen: false).deletePassword(
         Password(website: prefWebsite!, username: '', password: ''),
       );
     }
     _formKey.currentState!.save();
 
-    // ignore: use_build_context_synchronously
     Provider.of<Passwords>(context, listen: false).createPassword(
       Password(
         website: passwordDetails['website']!,
@@ -65,6 +64,7 @@ class CreateNewPassword extends StatelessWidget {
               decoration: const InputDecoration(
                 labelText: 'Website',
               ),
+              maxLength: 255,
               onSaved: (value) {
                 passwordDetails['website'] = value!;
               },
