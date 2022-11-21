@@ -124,10 +124,23 @@ class _PassTileState extends State<PassTile> {
                 widget.password.website,
                 overflow: TextOverflow.ellipsis,
               ),
-              subtitle: Text(
-                '${widget.password.username} :   ${_showPassword ? widget.password.password : ('* ' * widget.password.password.length)}',
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '${widget.password.username} : ',
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                  Text(
+                    _showPassword
+                        ? widget.password.password
+                        : ('* ' * widget.password.password.length),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ],
               ),
               trailing: IconButton(
                 onPressed: () {

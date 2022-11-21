@@ -56,38 +56,40 @@ class CreateNewPassword extends StatelessWidget {
       title: const Text('Create new password'),
       content: Form(
         key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextFormField(
-              controller: _websiteController,
-              decoration: const InputDecoration(
-                labelText: 'Website',
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: _websiteController,
+                decoration: const InputDecoration(
+                  labelText: 'Website',
+                ),
+                maxLength: 255,
+                onSaved: (value) {
+                  passwordDetails['website'] = value!;
+                },
               ),
-              maxLength: 255,
-              onSaved: (value) {
-                passwordDetails['website'] = value!;
-              },
-            ),
-            TextFormField(
-              controller: _usernameController,
-              decoration: const InputDecoration(
-                labelText: 'Username',
+              TextFormField(
+                controller: _usernameController,
+                decoration: const InputDecoration(
+                  labelText: 'Username',
+                ),
+                onSaved: (value) {
+                  passwordDetails['username'] = value!;
+                },
               ),
-              onSaved: (value) {
-                passwordDetails['username'] = value!;
-              },
-            ),
-            TextFormField(
-              controller: _passwordController,
-              decoration: const InputDecoration(
-                labelText: 'Password',
+              TextFormField(
+                controller: _passwordController,
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                ),
+                onSaved: (value) {
+                  passwordDetails['password'] = value!;
+                },
               ),
-              onSaved: (value) {
-                passwordDetails['password'] = value!;
-              },
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       actions: [

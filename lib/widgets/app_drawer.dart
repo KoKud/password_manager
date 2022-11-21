@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:password_manager/screens/auth_screen.dart';
 import 'package:password_manager/widgets/create_new_password.dart';

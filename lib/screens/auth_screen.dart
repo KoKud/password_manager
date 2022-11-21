@@ -50,73 +50,77 @@ class _AuthScreenState extends State<AuthScreen> {
       ),
       body: Form(
         key: _formKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text('Welcome to Password Manager',
-                style: TextStyle(fontSize: 20)),
-            const Text('Please authenticate yourself'),
-            const SizedBox(height: 20),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 500),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Key 1',
-                    border: OutlineInputBorder(),
-                  ),
-                  obscureText: true,
-                  validator: _keyValidator,
-                  onSaved: (value) => _keysData['key1'] = value!,
-                ),
-              ),
-            ),
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 500),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Key 2',
-                    border: OutlineInputBorder(),
-                  ),
-                  obscureText: true,
-                  validator: _keyValidator,
-                  onSaved: (value) => _keysData['key2'] = value!,
-                ),
-              ),
-            ),
-            const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+        child: Center(
+          child: SingleChildScrollView(
+            child: Column(
               children: [
-                const Text('Select Encryption Mode'),
-                const SizedBox(width: 20),
-                DropdownButton(
-                  value: _selectedAlgorithm,
-                  items: AESMode.values
-                      .map((e) => DropdownMenuItem(
-                            value: e,
-                            child: Text('AES ${e.name}'),
-                          ))
-                      .toList(),
-                  onChanged: _selectAlgorithm,
+                const Text('Welcome to Password Manager',
+                    style: TextStyle(fontSize: 20)),
+                const Text('Please authenticate yourself'),
+                const SizedBox(height: 20),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 500),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'Key 1',
+                        border: OutlineInputBorder(),
+                      ),
+                      obscureText: true,
+                      validator: _keyValidator,
+                      onSaved: (value) => _keysData['key1'] = value!,
+                    ),
+                  ),
+                ),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 500),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'Key 2',
+                        border: OutlineInputBorder(),
+                      ),
+                      obscureText: true,
+                      validator: _keyValidator,
+                      onSaved: (value) => _keysData['key2'] = value!,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 40),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Select Encryption Mode'),
+                    const SizedBox(width: 20),
+                    DropdownButton(
+                      value: _selectedAlgorithm,
+                      items: AESMode.values
+                          .map((e) => DropdownMenuItem(
+                                value: e,
+                                child: Text('AES ${e.name}'),
+                              ))
+                          .toList(),
+                      onChanged: _selectAlgorithm,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Theme.of(context).primaryColorLight,
+                    backgroundColor: Theme.of(context).primaryColor,
+                    minimumSize: const Size(200, 55),
+                  ),
+                  onPressed: () => _logintoProfile(context),
+                  child: const Text('Authenticate'),
                 ),
               ],
             ),
-            const SizedBox(height: 30),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Theme.of(context).primaryColorLight,
-                backgroundColor: Theme.of(context).primaryColor,
-                minimumSize: const Size(200, 55),
-              ),
-              onPressed: () => _logintoProfile(context),
-              child: const Text('Authenticate'),
-            ),
-          ],
+          ),
         ),
       ),
     );
